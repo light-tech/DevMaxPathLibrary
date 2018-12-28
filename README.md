@@ -29,10 +29,12 @@ A file path processing library is part of our need to implement a virtual file s
 
 Thus, we bundle these _related_ functions into this library to process the file paths. From our needs, it is easy to come up with the initial API:
 
-    void Normalize(const char *path, char *output, int output_length);
-    const char *GetFileName(const char *path);
-    const char *GetFileExtension(const char *path);
-    void ChangeFileExtension(const char *path, const char *new_extension, char *output, char *length);
+```C++
+void Normalize(const char *path, char *output, int output_length);
+const char *GetFileName(const char *path);
+const char *GetFileExtension(const char *path);
+void ChangeFileExtension(const char *path, const char *new_extension, char *output, char *length);
+```
 
 The resulting API is in the header file [`DMPaths.h`](DMPaths.h).
 
@@ -71,18 +73,19 @@ Now we can write some test cases:
     Output = C:\Windows\
 
 There are multiple ways to make a test framework for this. The choice in [`Test/TestPathNormalize.cpp`](Test/TestPathNormalize.cpp) is to write a function
-
-    void TestNormalize(const char *path, const char *expected);
-
+```C++
+void TestNormalize(const char *path, const char *expected);
+```
 and then write our main function
-
-    int main(int argc, const char **argv)
-    {
-        TestNormalize("/a", "/a");
-        TestNormalize("/a/../b/", "/b");
-        TestNormalize("C:\Windows/", "C:\Windows\");
-        return 0;
-    }
+```C++
+int main(int argc, const char **argv)
+{
+    TestNormalize("/a", "/a");
+    TestNormalize("/a/../b/", "/b");
+    TestNormalize("C:\Windows/", "C:\Windows\");
+    return 0;
+}
+```
 
 Implementation
 --------------
@@ -92,9 +95,9 @@ Now we implement `Normalize`. Note that during the process of implementation, we
 The first issue the implementer runs into is: How do one distinguish between Unix path and Windows path if the input path is relative? (For absolute path, it is evident.)
 
 After another 99 meetings, the involved parties realize that: Maybe we should always use Unix paths in `Normalize` and add a method
-
-    void GetWindowsPreferredPath(const char *unix_path, char *win_path, int length);
-
+```C++
+void GetWindowsPreferredPath(const char *unix_path, char *win_path, int length);
+```
 to convert Unix path separator `/` to Windows-preferred `\` if needed.
 
 Then we repeat with other functions.
